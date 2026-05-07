@@ -1,15 +1,9 @@
-"""
-ConsentGraph — Research Backend
-================================
-FastAPI server that receives site analytics from the Chrome extension.
-"""
-
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-import json, os, uuid
+import json, uuid
 from pathlib import Path
 
 app = FastAPI(title="ConsentGraph Research API", version="1.0.0")
@@ -35,10 +29,12 @@ class SitePayload(BaseModel):
     cookies: Optional[Dict[str, Any]] = None
     consent_ui: Optional[Dict[str, Any]] = None
     trackers: Optional[Dict[str, Any]] = None
-    privacy_links: Optional[List[Dict]] = []
+    privacy_links: Optional[List[Dict[str, Any]]] = []
     risk_summary: Optional[Dict[str, Any]] = None
     extension_version: Optional[str] = None
     collected_at: Optional[str] = None
+
+    model_config = {"extra": "allow"}
 
 
 @app.get("/")
@@ -48,7 +44,7 @@ def health():
 
 @app.post("/api/collect")
 async def collect(payload: SitePayload, request: Request):
-    record = payload.dict()
+    record = payload.model_dump()
     record["_id"] = str(uuid.uuid4())
     record["_received_at"] = datetime.utcnow().isoformat()
     record["_ip"] = request.client.host if request.client else "unknown"
@@ -72,20 +68,18 @@ def stats():
         return {"total_records": 0, "unique_domains": 0}
 
     domains = set(r.get("domain", "") for r in records)
-    total_trackers = sum(r.get("trackers", {}).get("count", 0) if r.get("trackers") else 0 for r in records)
-    dpdp_concerns = sum(1 for r in records if r.get("risk_summary", {}) and r["risk_summary"].get("dpdp_concern"))
-    high_risk = sum(1 for r in records if r.get("risk_summary", {}) and r["risk_summary"].get("overall") == "high")
+    total_trackers = sum((r.get("trackers") or {}).get("count", 0) for r in records)
+    dpdp_concerns = sum(1 for r in records if (r.get("risk_summary") or {}).get("dpdp_concern"))
+    high_risk = sum(1 for r in records if (r.get("risk_summary") or {}).get("overall") == "high")
 
-    dark_patterns = {}
+    dark_patterns: Dict[str, int] = {}
     for r in records:
-        cui = r.get("consent_ui") or {}
-        for dp in cui.get("dark_pattern_signals", []):
+        for dp in (r.get("consent_ui") or {}).get("dark_pattern_signals", []):
             dark_patterns[dp] = dark_patterns.get(dp, 0) + 1
 
-    tracker_owners = {}
+    tracker_owners: Dict[str, int] = {}
     for r in records:
-        t = r.get("trackers") or {}
-        for td in t.get("domains", []):
+        for td in (r.get("trackers") or {}).get("domains", []):
             owner = td.get("owner", "Unknown")
             tracker_owners[owner] = tracker_owners.get(owner, 0) + 1
 
@@ -123,6 +117,6 @@ def _load_all():
             if line:
                 try:
                     records.append(json.loads(line))
-                except:
+                except Exception:
                     pass
     return records
