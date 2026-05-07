@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-import json, uuid
+import json, uuid, os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from pathlib import Path
 
 app = FastAPI(title="ConsentGraph Research API", version="1.0.0")
@@ -15,11 +17,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATA_DIR = Path("data")
-DATA_DIR.mkdir(exist_ok=True)
-SITES_FILE = DATA_DIR / "sites.jsonl"
+# ── DB connection ──
+def get_conn():
+    return psycopg2.connect(os.environ["DATABASE_URL"], cursor_factory=RealDictCursor)
+
+# ── Create table on startup ──
+@app.on_event("startup")
+def startup():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS site_visits (
+                    id          TEXT PRIMARY KEY,
+                    domain      TEXT,
+                    url         TEXT,
+                    title       TEXT,
+                    language    TEXT,
+                    timestamp   TEXT,
+                    cookies     JSONB,
+                    consent_ui  JSONB,
+                    trackers    JSONB,
+                    privacy_links JSONB,
+                    risk_summary  JSONB,
+                    extension_version TEXT,
+                    collected_at TEXT,
+                    received_at TEXT,
+                    ip          TEXT,
+                    raw         JSONB
+                );
+            """)
+        conn.commit()
 
 
+# ── Model ──
 class SitePayload(BaseModel):
     url: Optional[str] = None
     domain: Optional[str] = None
@@ -37,6 +67,8 @@ class SitePayload(BaseModel):
     model_config = {"extra": "allow"}
 
 
+# ── Routes ──
+
 @app.get("/")
 def health():
     return {"status": "ok", "service": "ConsentGraph Research API"}
@@ -44,17 +76,42 @@ def health():
 
 @app.post("/api/collect")
 async def collect(payload: SitePayload, request: Request):
-    record = payload.model_dump()
-    record["_id"] = str(uuid.uuid4())
-    record["_received_at"] = datetime.utcnow().isoformat()
-    record["_ip"] = request.client.host if request.client else "unknown"
+    record_id = str(uuid.uuid4())
+    received_at = datetime.utcnow().isoformat()
+    ip = request.client.host if request.client else "unknown"
+    data = payload.model_dump()
 
-    with open(SITES_FILE, "a") as f:
-        f.write(json.dumps(record) + "\n")
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO site_visits
+                (id, domain, url, title, language, timestamp, cookies, consent_ui,
+                 trackers, privacy_links, risk_summary, extension_version,
+                 collected_at, received_at, ip, raw)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                record_id,
+                payload.domain,
+                payload.url,
+                payload.title,
+                payload.language,
+                payload.timestamp,
+                json.dumps(payload.cookies),
+                json.dumps(payload.consent_ui),
+                json.dumps(payload.trackers),
+                json.dumps(payload.privacy_links),
+                json.dumps(payload.risk_summary),
+                payload.extension_version,
+                payload.collected_at,
+                received_at,
+                ip,
+                json.dumps(data),
+            ))
+        conn.commit()
 
     return {
         "status": "received",
-        "id": record["_id"],
+        "id": record_id,
         "domain": payload.domain,
         "trackers": payload.trackers.get("count", 0) if payload.trackers else 0,
         "risk": payload.risk_summary.get("overall") if payload.risk_summary else "unknown",
@@ -63,60 +120,86 @@ async def collect(payload: SitePayload, request: Request):
 
 @app.get("/stats")
 def stats():
-    records = _load_all()
-    if not records:
-        return {"total_records": 0, "unique_domains": 0}
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) as total FROM site_visits")
+            total = cur.fetchone()["total"]
 
-    domains = set(r.get("domain", "") for r in records)
-    total_trackers = sum((r.get("trackers") or {}).get("count", 0) for r in records)
-    dpdp_concerns = sum(1 for r in records if (r.get("risk_summary") or {}).get("dpdp_concern"))
-    high_risk = sum(1 for r in records if (r.get("risk_summary") or {}).get("overall") == "high")
+            cur.execute("SELECT COUNT(DISTINCT domain) as domains FROM site_visits")
+            unique_domains = cur.fetchone()["domains"]
 
-    dark_patterns: Dict[str, int] = {}
-    for r in records:
-        for dp in (r.get("consent_ui") or {}).get("dark_pattern_signals", []):
-            dark_patterns[dp] = dark_patterns.get(dp, 0) + 1
+            cur.execute("""
+                SELECT SUM((trackers->>'count')::int) as total_trackers
+                FROM site_visits WHERE trackers IS NOT NULL
+            """)
+            total_trackers = cur.fetchone()["total_trackers"] or 0
 
-    tracker_owners: Dict[str, int] = {}
-    for r in records:
-        for td in (r.get("trackers") or {}).get("domains", []):
-            owner = td.get("owner", "Unknown")
-            tracker_owners[owner] = tracker_owners.get(owner, 0) + 1
+            cur.execute("""
+                SELECT COUNT(*) as cnt FROM site_visits
+                WHERE risk_summary->>'overall' = 'high'
+            """)
+            high_risk = cur.fetchone()["cnt"]
+
+            cur.execute("""
+                SELECT COUNT(*) as cnt FROM site_visits
+                WHERE (risk_summary->>'dpdp_concern')::boolean = true
+            """)
+            dpdp_concerns = cur.fetchone()["cnt"]
+
+            # Top tracker owners
+            cur.execute("""
+                SELECT owner, COUNT(*) as cnt
+                FROM site_visits,
+                     jsonb_array_elements(trackers->'domains') AS t,
+                     jsonb_extract_path_text(t, 'owner') AS owner
+                WHERE trackers IS NOT NULL
+                GROUP BY owner ORDER BY cnt DESC LIMIT 10
+            """)
+            tracker_owners = {r["owner"]: r["cnt"] for r in cur.fetchall()}
+
+            # Dark pattern frequency
+            cur.execute("""
+                SELECT dp, COUNT(*) as cnt
+                FROM site_visits,
+                     jsonb_array_elements_text(consent_ui->'dark_pattern_signals') AS dp
+                WHERE consent_ui IS NOT NULL
+                GROUP BY dp ORDER BY cnt DESC
+            """)
+            dark_patterns = {r["dp"]: r["cnt"] for r in cur.fetchall()}
 
     return {
-        "total_records": len(records),
-        "unique_domains": len(domains),
+        "total_records": total,
+        "unique_domains": unique_domains,
         "total_tracker_detections": total_trackers,
-        "dpdp_concern_count": dpdp_concerns,
         "high_risk_sites": high_risk,
+        "dpdp_concern_count": dpdp_concerns,
+        "top_tracker_owners": tracker_owners,
         "dark_pattern_frequency": dark_patterns,
-        "top_tracker_owners": dict(sorted(tracker_owners.items(), key=lambda x: -x[1])[:10]),
     }
 
 
 @app.get("/sites")
 def list_sites(limit: int = 50, domain: Optional[str] = None):
-    records = _load_all()
-    if domain:
-        records = [r for r in records if domain.lower() in (r.get("domain") or "").lower()]
-    return {"count": len(records), "sites": records[-limit:]}
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            if domain:
+                cur.execute(
+                    "SELECT * FROM site_visits WHERE domain ILIKE %s ORDER BY received_at DESC LIMIT %s",
+                    (f"%{domain}%", limit)
+                )
+            else:
+                cur.execute(
+                    "SELECT * FROM site_visits ORDER BY received_at DESC LIMIT %s",
+                    (limit,)
+                )
+            rows = cur.fetchall()
+    return {"count": len(rows), "sites": [dict(r) for r in rows]}
 
 
 @app.get("/export")
 def export_json():
-    return _load_all()
-
-
-def _load_all():
-    if not SITES_FILE.exists():
-        return []
-    records = []
-    with open(SITES_FILE) as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                try:
-                    records.append(json.loads(line))
-                except Exception:
-                    pass
-    return records
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT raw FROM site_visits ORDER BY received_at DESC")
+            rows = cur.fetchall()
+    return [r["raw"] for r in rows]
