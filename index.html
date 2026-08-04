@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ConsentGraph - Privacy Compliance Analysis for DPDP Act 2023 and GDPR">
+    <meta name="keywords" content="privacy, DPDP, GDPR, dark patterns, compliance, tracking">
+    <meta name="author" content="Your Name">
+    
+    <title>ConsentGraph - Privacy Compliance Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='90' font-weight='bold'>🕸️</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🕸️</span>
+                <span class="logo-text">ConsentGraph</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#findings">Findings</a></li>
+                <li><a href="#features">Features</a></li>
+                <!-- <li><a href="#downloads">Downloads</a></li> -->
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Privacy Compliance Analysis</h1>
+            <p class="subtitle">Detect dark patterns, tracking networks, and DPDP Act 2023 violations</p>
+            <div class="hero-buttons">
+                <a href="#findings" class="btn btn-primary">View Findings</a>
+                <a href="https://github.com/consentgraph" class="btn btn-secondary">GitHub</a>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number">40</div>
+                <div class="stat-label">Websites Analyzed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">87.5%</div>
+                <div class="stat-label">Non-Compliant</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">93.5%</div>
+                <div class="stat-label">Tracking Persists</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Dark Patterns</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <div class="container">
+            <h2>What is ConsentGraph?</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>🎯 Mission</h3>
+                    <p>ConsentGraph is the first framework to empirically measure DPDP Act 2023 compliance and detect dark patterns at scale. It analyzes websites for manipulative consent mechanisms, tracking technologies, and hidden data broker relationships.</p>
+                </div>
+                <div class="card">
+                    <h3>🌍 Focus</h3>
+                    <p>Built for India's 900 million internet users, this research framework provides evidence for privacy regulation enforcement and helps understand the tracking ecosystem that affects user privacy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Findings Section -->
+    <section id="findings" class="section section-alt">
+        <div class="container">
+            <h2>Key Findings</h2>
+            
+            <div class="finding-group">
+                <h3>🚨 Finding 1: 46% Compliance Violation Rate</h3>
+                <div class="grid-4">
+                    <div class="metric-card danger">
+                        <div class="metric-value">87.5%</div>
+                        <div class="metric-label">Non-Compliant Sites</div>
+                        <div class="metric-sub">(35 out of 40)</div>
+                    </div>
+                    <div class="metric-card danger">
+                        <div class="metric-value">40.0%</div>
+                        <div class="metric-label">Critical Violations</div>
+                        <div class="metric-sub">(16 out of 40)</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-value">54.6</div>
+                        <div class="metric-label">Average Score</div>
+                        <div class="metric-sub">out of 100</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">4</div>
+                        <div class="metric-label">Sectors</div>
+                        <div class="metric-sub">Analyzed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="finding-group">
+                <h3>🚫 Finding 2: Universal Dark Patterns</h3>
+                <div class="grid-3">
+                    <div class="pattern-card">
+                        <div class="pattern-icon">🚪</div>
+                        <div class="pattern-name">Cookie Walls</div>
+                        <div class="pattern-desc">Users forced to accept to proceed</div>
+                        <div class="pattern-prevalence">80%</div>
+                    </div>
+                    <div class="pattern-card">
+                        <div class="pattern-icon">❓</div>
+                        <div class="pattern-name">Trick Questions</div>
+                        <div class="pattern-desc">Confusing button labels</div>
+                        <div class="pattern-prevalence">80%</div>
+                    </div>
+                    <div class="pattern-card">
+                        <div class="pattern-icon">📢</div>
+                        <div class="pattern-name">Nagging</div>
+                        <div class="pattern-desc">Repeated consent requests</div>
+                        <div class="pattern-prevalence">70%</div>
+                    </div>
+                    <div class="pattern-card">
+                        <div class="pattern-icon">🎭</div>
+                        <div class="pattern-name">Sneaking</div>
+                        <div class="pattern-desc">Pre-checked boxes</div>
+                        <div class="pattern-prevalence">70%</div>
+                    </div>
+                    <div class="pattern-card">
+                        <div class="pattern-icon">🪤</div>
+                        <div class="pattern-name">Roach Motel</div>
+                        <div class="pattern-desc">Hard to opt-out</div>
+                        <div class="pattern-prevalence">60%</div>
+                    </div>
+                    <div class="pattern-card">
+                        <div class="pattern-icon">🎬</div>
+                        <div class="pattern-name">Disguised Ads</div>
+                        <div class="pattern-desc">Hidden tracking</div>
+                        <div class="pattern-prevalence">50%</div>
+                    </div>
+                </div>
+                <p class="highlight">❌ 100% of analyzed websites use at least one dark pattern</p>
+            </div>
+
+            <div class="finding-group">
+                <h3>🔍 Finding 3: Tracking Persists After Rejection</h3>
+                <div class="grid-2">
+                    <div class="persistence-chart">
+                        <div class="chart-title">Tracker Persistence Rate</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 93.5%">
+                                <span class="progress-label">93.5% Average</span>
+                            </div>
+                        </div>
+                        <div class="tracker-persistence">
+                            <div class="tracker-item">
+                                <span>Google Analytics (_ga)</span>
+                                <div class="mini-bar" style="width: 92.1%"></div>
+                                <span>92.1%</span>
+                            </div>
+                            <div class="tracker-item">
+                                <span>Hotjar (_hjid)</span>
+                                <div class="mini-bar" style="width: 95%"></div>
+                                <span>95.0%</span>
+                            </div>
+                            <div class="tracker-item">
+                                <span>Criteo (cto.js)</span>
+                                <div class="mini-bar" style="width: 95%"></div>
+                                <span>95.0%</span>
+                            </div>
+                            <div class="tracker-item">
+                                <span>Segment (ajs_uid)</span>
+                                <div class="mini-bar" style="width: 95%"></div>
+                                <span>95.0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="persistence-info">
+                        <h4>⚠️ Critical Finding</h4>
+                        <p>Even after users click "Reject All", tracking continues without their knowledge.</p>
+                        <ul>
+                            <li>Users believe they've opted out</li>
+                            <li>Tracking actually persists</li>
+                            <li>Violates DPDP Act 2023</li>
+                            <li>No meaningful choice</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="finding-group">
+                <h3>🕸️ Finding 4: Hidden Data Broker Network</h3>
+                <div class="network-info">
+                    <div class="network-stat">
+                        <div class="ns-number">6</div>
+                        <div class="ns-label">Data Brokers Detected</div>
+                    </div>
+                    <div class="network-stat">
+                        <div class="ns-number">14</div>
+                        <div class="ns-label">Tracking Technologies</div>
+                    </div>
+                    <div class="network-stat">
+                        <div class="ns-number">179</div>
+                        <div class="ns-label">Direct Connections</div>
+                    </div>
+                    <div class="network-stat">
+                        <div class="ns-number">10</div>
+                        <div class="ns-label">Hidden Partnerships</div>
+                    </div>
+                </div>
+                <div class="broker-dominance">
+                    <h4>🔴 Critical: Google Monopoly</h4>
+                    <div class="google-stat">
+                        <div class="google-penetration">100%</div>
+                        <p>Google Analytics reaches <strong>EVERY SINGLE ANALYZED WEBSITE</strong></p>
+                    </div>
+                    <ul class="broker-list">
+                        <li>
+                            <span class="broker-name">Google Analytics/Ads</span>
+                            <span class="broker-score critical">1.562 influence</span>
+                        </li>
+                        <li>
+                            <span class="broker-name">Segment (Twilio)</span>
+                            <span class="broker-score">0.292</span>
+                        </li>
+                        <li>
+                            <span class="broker-name">Amplitude Analytics</span>
+                            <span class="broker-score">0.267</span>
+                        </li>
+                        <li>
+                            <span class="broker-name">Meta Platforms</span>
+                            <span class="broker-score">0.242</span>
+                        </li>
+                        <li>
+                            <span class="broker-name">Criteo</span>
+                            <span class="broker-score">0.219</span>
+                        </li>
+                        <li>
+                            <span class="broker-name">Hotjar</span>
+                            <span class="broker-score">0.219</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="finding-group">
+                <h3>📊 Finding 5: Sector Disparity</h3>
+                <div class="sector-comparison">
+                    <div class="sector-card government">
+                        <div class="sector-emoji">🏛️</div>
+                        <div class="sector-name">Government</div>
+                        <div class="sector-score">72.8</div>
+                        <div class="sector-status">✅ Best Compliance</div>
+                    </div>
+                    <div class="sector-card fintech">
+                        <div class="sector-emoji">💰</div>
+                        <div class="sector-name">Fintech</div>
+                        <div class="sector-score">60.8</div>
+                        <div class="sector-status">⚠️ Moderate</div>
+                    </div>
+                    <div class="sector-card news">
+                        <div class="sector-emoji">📰</div>
+                        <div class="sector-name">News</div>
+                        <div class="sector-score">49.3</div>
+                        <div class="sector-status">❌ Poor</div>
+                    </div>
+                    <div class="sector-card ecommerce">
+                        <div class="sector-emoji">🛒</div>
+                        <div class="sector-name">E-commerce</div>
+                        <div class="sector-score">35.6</div>
+                        <div class="sector-status">❌ Worst</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <h2>Three Components</h2>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Research Framework</h3>
+                    <p>Python framework for analyzing websites at scale</p>
+                    <ul class="feature-list">
+                        <li>Demo mode: &lt;1 minute</li>
+                        <li>Async crawler: 2-5 min</li>
+                        <li>Deep analysis: 10 min</li>
+                        <li>CSV + JSON export</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🕸️</div>
+                    <h3>Network Analysis</h3>
+                    <p>Bipartite graph of tracking ecosystem</p>
+                    <ul class="feature-list">
+                        <li>Website ↔ Tracker ↔ Broker</li>
+                        <li>Hidden relationships</li>
+                        <li>Influence scoring</li>
+                        <li>Risk assessment</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Chrome Extension</h3>
+                    <p>Real-time privacy analysis for users</p>
+                    <ul class="feature-list">
+                        <li>30-second install</li>
+                        <li>&lt;2 second analysis</li>
+                        <li>Zero data collection</li>
+                        <li>Export reports</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Detect Section
+    <section class="section section-alt">
+        <div class="container">
+            <h2>What We Detect</h2>
+            <div class="grid-2">
+                <div class="detect-box">
+                    <h3>🚫 Dark Patterns (6 types)</h3>
+                    <ul>
+                        <li>Cookie walls</li>
+                        <li>Roach motels</li>
+                        <li>Sneaking</li>
+                        <li>Nagging</li>
+                        <li>Trick questions</li>
+                        <li>Disguised ads</li>
+                    </ul>
+                </div>
+                <div class="detect-box">
+                    <h3>🍪 Trackers (9+)</h3>
+                    <ul>
+                        <li>Google Analytics</li>
+                        <li>Meta/Facebook</li>
+                        <li>DoubleClick</li>
+                        <li>Segment/Twilio</li>
+                        <li>Amplitude</li>
+                        <li>Criteo, Hotjar, Mixpanel</li>
+                    </ul>
+                </div>
+                <div class="detect-box">
+                    <h3>⚖️ DPDP Act 2023 (7 checks)</h3>
+                    <ul>
+                        <li>Consent mechanism</li>
+                        <li>Purpose statement</li>
+                        <li>Data controller info</li>
+                        <li>Retention policy</li>
+                        <li>Anonymization</li>
+                        <li>Third-party disclosure</li>
+                        <li>User rights</li>
+                    </ul>
+                </div>
+                <div class="detect-box">
+                    <h3>🇪🇺 GDPR (7 checks)</h3>
+                    <ul>
+                        <li>Privacy policy</li>
+                        <li>Data controller</li>
+                        <li>Legitimate interest</li>
+                        <li>Retention period</li>
+                        <li>Right to delete</li>
+                        <li>Right to access</li>
+                        <li>Processing basis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Downloads Section -->
+    <!-- <section id="downloads" class="section">
+        <div class="container">
+            <h2>Get Started</h2>
+            <div class="download-options">
+                <div class="download-card">
+                    <h3>📦 Framework</h3>
+                    <p>Python package for research</p>
+                    <a href="https://github.com/consentgraph/framework" class="btn btn-secondary">GitHub</a>
+                </div>
+                <div class="download-card">
+                    <h3>🔧 Chrome Extension</h3>
+                    <p>Real-time browser analysis</p>
+                    <a href="https://github.com/consentgraph/extension" class="btn btn-secondary">GitHub</a>
+                </div>
+                <div class="download-card">
+                    <h3>📄 Dataset</h3>
+                    <p>40 websites analysis results</p>
+                    <a href="https://github.com/consentgraph" class="btn btn-secondary">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- About Section -->
+    <section id="about" class="section section-alt">
+        <div class="container">
+            <h2>About ConsentGraph</h2>
+            <div class="about-content">
+                <p><strong>ConsentGraph</strong> is a research framework and Chrome extension that analyzes privacy compliance and detects dark patterns across websites. Built with a focus on India's DPDP Act 2023, it provides the first empirical evidence of systemic privacy violations affecting 900+ million internet users.</p>
+                
+                <!-- <h3>Why It Matters</h3>
+                <ul>
+                    <li>✅ <strong>First DPDP Act Benchmark:</strong> No prior empirical study of Indian website compliance</li>
+                    <li>✅ <strong>Dark Pattern Detection:</strong> Systematic identification of manipulative consent mechanics</li>
+                    <li>✅ <strong>Tracker Network Mapping:</strong> Reveals hidden data broker relationships</li>
+                    <li>✅ <strong>Regulatory Evidence:</strong> Supports enforcement actions and policy decisions</li>
+                    <li>✅ <strong>User Protection:</strong> Educates users about privacy risks</li>
+                </ul> -->
+
+                <!-- <h3>Key Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-key">Websites Analyzed</div>
+                        <div class="stat-val">40</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-key">Compliance Violations</div>
+                        <div class="stat-val">87.5%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-key">Dark Patterns Found</div>
+                        <div class="stat-val">100%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-key">Tracking Persistence</div>
+                        <div class="stat-val">93.5%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-key">Data Brokers</div>
+                        <div class="stat-val">6</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-key">Hidden Partnerships</div>
+                        <div class="stat-val">10</div>
+                    </div>
+                </div> -->
+<!-- 
+                <h3>Components</h3>
+                <p><strong>Research Framework:</strong> Python package with three analysis modes for different use cases</p>
+                <p><strong>Network Analysis:</strong> Bipartite graph revealing the tracking ecosystem</p>
+                <p><strong>Chrome Extension:</strong> Real-time privacy analyzer for end users</p> -->
+
+                <!-- <h3>License</h3> -->
+                <!-- <p>MIT License - Free to use, modify, and distribute</p> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ConsentGraph</h4>
+                    <p>Privacy compliance analysis for DPDP Act 2023</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="https://github.com/consentgraph">GitHub</a></li>
+                        <li><a href="#findings">Research</a></li>
+                        <li><a href="#features">Features</a></li>
+                    </ul>
+                </div>
+                <!-- <div class="footer-section">
+                    <h4>License</h4>
+                    <p>MIT License</p>
+                </div> -->
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ConsentGraph. Open source research for privacy protection.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
